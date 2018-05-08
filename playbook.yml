@@ -1,35 +1,28 @@
 ---
 - name: Install cromwell mysql
+  hosts: cromwell_db
+  become: yes
   gather_facts: true
   tasks:
-    - name: Install mysql package
-      apt:
-        name:
-          - mysql-server
-          - python-mysqldb
-
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: mysql listens to 0.0.0.0
-      mysql_variables:
-        variable: "bind-address"
-        value: "0.0.0.0"
-
-    - name: create cromwell-db
-      mysql_db:
-        name: "cromwell_db"
-        state: present
-
-    - name: Create cromwell user
-      mysql_user:
-        name: "{{item}}"
-        password: "cromwell"
-        priv: "cromwell_db.*:ALL"
-        state: present
-      with_items:
-        - "'cromwell'@'localhost'"
-        - "'cromwell'@'%'"
+    - name: Install mysql
+      include_role:
+        name: geerlingguy.mysql
+      vars:
+        mysql_databases:
+          - name: 'cromwell_db'
+        mysql_users:
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: 'localhost'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: '%'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+        mysql_bind_address: '0.0.0.0'
+        mysql_port: "3306"
 
     - name: Install ufw package
       apt:
@@ -48,5 +41,4 @@
         to_port: 3306
         state: enabled
         rule: allow
-        proto:
-          - tcp
+        proto: tcp
