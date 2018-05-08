@@ -1,7 +1,7 @@
 ---
 - name: Install cromwell mysql
   hosts: cromwell_db
-  become: yes
+  become: true
   gather_facts: true
   tasks:
     - name: Install mysql
