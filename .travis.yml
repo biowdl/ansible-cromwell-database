@@ -1,18 +1,10 @@
 ---
 language: python
-services: docker
+sudo: false
 python:
   - 2.7
   - 3.5
-before_install:
-  # Make sure everything's up to date.
-  - sudo apt-get update -qq
 install: pip install -r requirements.txt
 script:
   - yamllint -s $(git ls-files | grep -E '*.ya?ml$')
   - ansible-lint playbook.yml
-  - ansible-galaxy install -r requirements.yml
-  - docker run -d --expose 3306 --name cromwell_db ubuntu:18.04 sleep 30000
-  - docker exec cromwell_db bash -c 'apt update && apt install -y python'
-  - ansible-playbook -i ci_hosts playbook.yml --become-method su --syntax-check
-  - ansible-playbook -i ci_hosts playbook.yml --become-method su
