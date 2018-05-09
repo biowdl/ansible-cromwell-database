@@ -1,1 +1,1 @@
-cromwell_db ansible_host=localhost
+cromwell_db ansible_host=cromwell_db ansible_connection=docker
