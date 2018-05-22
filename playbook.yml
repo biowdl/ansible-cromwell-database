@@ -1,0 +1,44 @@
+---
+- name: Install cromwell mysql
+  hosts: cromwell_db
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install mysql
+      include_role:
+        name: geerlingguy.mysql
+      vars:
+        mysql_databases:
+          - name: 'cromwell_db'
+        mysql_users:
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: 'localhost'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: '%'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+        mysql_bind_address: '0.0.0.0'
+        mysql_port: "3306"
+
+    - name: Install ufw package
+      apt:
+        name: ufw
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Allow openssh
+      ufw:
+        name: OpenSSH
+        rule: allow
+        state: enabled
+
+    - name: Open port 3306
+      ufw:
+        to_port: 3306
+        state: enabled
+        rule: allow
+        proto: tcp
