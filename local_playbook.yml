@@ -1,0 +1,26 @@
+---
+- name: Install cromwell mysql
+  hosts: localhost
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install mysql
+      include_role:
+        name: geerlingguy.mysql
+      vars:
+        mysql_databases:
+          - name: 'cromwell_db'
+        mysql_users:
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: 'localhost'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+          - name: 'cromwell'
+            password: 'cromwell'
+            host: '%'
+            priv: 'cromwell_db.*:ALL'
+            state: present
+        mysql_bind_address: '0.0.0.0'
+        mysql_port: "3306"
+
