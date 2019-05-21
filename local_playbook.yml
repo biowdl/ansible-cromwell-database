@@ -23,4 +23,3 @@
             state: present
         mysql_bind_address: '0.0.0.0'
         mysql_port: "3306"
-
