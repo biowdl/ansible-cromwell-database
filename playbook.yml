@@ -3,23 +3,25 @@
   hosts: cromwell_db
   become: true
   gather_facts: true
+  vars:
+    cromwell_database: "cromwell_db"
   tasks:
     - name: Install mysql
       include_role:
         name: geerlingguy.mysql
       vars:
         mysql_databases:
-          - name: 'cromwell_db'
+          - name: "{{ cromwell_database }}"
         mysql_users:
           - name: 'cromwell'
             password: 'cromwell'
             host: 'localhost'
-            priv: 'cromwell_db.*:ALL'
+            priv: '{{ cromwell_database }}.*:ALL'
             state: present
           - name: 'cromwell'
             password: 'cromwell'
             host: '%'
-            priv: 'cromwell_db.*:ALL'
+            priv: '{{ cromwell_database }}.*:ALL'
             state: present
         mysql_bind_address: '0.0.0.0'
         mysql_port: "3306"
