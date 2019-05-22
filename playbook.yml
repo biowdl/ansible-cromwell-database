@@ -5,6 +5,8 @@
   gather_facts: true
   vars:
     cromwell_database: "cromwell_db"
+    cromwell_user: "cromwell"  # Give each database unique user
+    cromwell_password: "cromwell"
   tasks:
     - name: Install mysql
       include_role:
@@ -13,13 +15,13 @@
         mysql_databases:
           - name: "{{ cromwell_database }}"
         mysql_users:
-          - name: 'cromwell'
-            password: 'cromwell'
+          - name: '{{cromwell_user}}'
+            password: '{{cromwell_password}}"'
             host: 'localhost'
             priv: '{{ cromwell_database }}.*:ALL'
             state: present
-          - name: 'cromwell'
-            password: 'cromwell'
+          - name: '{{cromwell_user}}'
+            password: '{{cromwell_password}}'
             host: '%'
             priv: '{{ cromwell_database }}.*:ALL'
             state: present
